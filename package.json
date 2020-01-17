@@ -6,12 +6,14 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "chaining": "node playground/promise-chaining2.js"
+    "chaining": "node playground/promise-chaining2.js",
+    "dabble" : "node playground/dabble.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
     "mongodb": "^3.3.3",
     "mongoose": "^5.7.7",
