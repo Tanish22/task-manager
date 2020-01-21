@@ -7,8 +7,10 @@ router.post('/users', async (req, res) => {
     const user = new User(req.body)
 
     try{
-    await user.save()
-    res.status(201).send(user)
+    await user.save();
+    const token = user.generateAuthToken();     // generates token on every signup
+
+    res.status(201).send({user, token})
     }
     catch(error){ 
         res.status(400).send(error);         
@@ -18,8 +20,10 @@ router.post('/users', async (req, res) => {
 router.post('/users/login', async (req, res) => {
     try{
         const user = await User.findByCredentials(req.body.email, req.body.password);
-
-        res.send(user);
+        
+        const token = await user.generateAuthToken();
+ 
+        res.send({ user, token });
     }
     catch(error){
         res.status(400).send();
@@ -52,6 +56,8 @@ router.get('/users/:id', async (req, res) => {
         res.status(500).send(error);
     }
 })
+
+// router.patch => initially checks whether the req contains valid updates and then applies the updates
 
 router.patch('/users/:id', async (req, res) => {    
     const updates = Object.keys(req.body);
