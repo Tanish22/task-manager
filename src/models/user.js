@@ -45,6 +45,7 @@ const userSchema = new mongoose.Schema({
         }
     },
 
+    // saving tokens as part of user document for future access
     tokens : [{
         token : {
             type : String,
@@ -54,12 +55,16 @@ const userSchema = new mongoose.Schema({
 })
 
                     // SCHEMA.METHODS ARE ACCESSIBLE ON AN INSTANCE
-// generates and returns a token on a specific user    
+
+    // generates and returns a token on a specific user 
+
 userSchema.methods.generateAuthToken = async function(){
-    const user = this;
+    const user = this;  // as this points to the instance, we can operate on it using .sign, etc
+
+    // 'firstauthproject' refers to the jwt secret key stored on the server to authenticate the correct user
     const token = jwt.sign({_id : user._id.toString()}, 'firstauthproject');
 
-    user.tokens = user.tokens.concat({token}); 
+    user.tokens = user.tokens.concat({token});  // concats 
     await user.save();
 
     return token;

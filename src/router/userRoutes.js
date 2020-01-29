@@ -1,7 +1,8 @@
 const express = require('express');
 const router = new express.Router();
 
-const User = require('../models/user')
+const User = require('../models/user');
+const auth = require('../middleware/auth');
 
 router.post('/users', async (req, res) => {
     const user = new User(req.body)
@@ -30,14 +31,23 @@ router.post('/users/login', async (req, res) => {
     }
 })
 
-router.get('/users', async (req, res) => {
-    try{
-        const users = await User.find({})
-        res.send(users)
-    }
-    catch(error){
-        res.status(500).send();
-    }
+
+// this route has been commented as it will give the logged in user access to all the users
+
+// router.get('/users', auth, async (req, res) => {
+//     try{
+//         const users = await User.find({})
+//         res.send(users)
+//     }
+//     catch(error){
+//         res.status(500).send();
+//     }  
+// })
+
+
+//  endpoint with authentication
+router.get('/users/me', auth, (req, res) => {
+    res.send(req.user);
 })
 
 router.get('/users/:id', async (req, res) => {
@@ -56,6 +66,7 @@ router.get('/users/:id', async (req, res) => {
         res.status(500).send(error);
     }
 })
+
 
 // router.patch => initially checks whether the req contains valid updates and then applies the updates
 
