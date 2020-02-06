@@ -13,7 +13,7 @@ router.post('/users', async (req, res) => {
 
     res.status(201).send({user, token})
     }
-    catch(error){ 
+    catch(error){   
         res.status(400).send(error);         
     } 
 }) 
