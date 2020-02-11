@@ -3,6 +3,11 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
+
+// this fn takes in a bearer token given by the user in the req.header property and then decodes it using jwt.verify and using the 
+// "firstauthproject" secretKey & finds the user with his respective id and token saved in the token Array in 
+// mongoose Schema. 
+
 const auth = async (req, res, next) => {
     try{
         const token = req.header('Authorization').replace('Bearer ', '');

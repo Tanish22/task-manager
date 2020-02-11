@@ -31,6 +31,20 @@ router.post('/users/login', async (req, res) => {
     }
 })
 
+router.post('/users/logout', auth, async (req, res) => {
+    try{
+        req.user.tokens = req.user.tokens.filter((token) => {
+            return token.token !== req.token
+        })
+        await req.user.save()
+
+        res.send();
+    }
+    catch(error){
+        res.status(500).send()
+    }
+})
+
 
 // this route has been commented as it will give the logged in user access to all the users
 
@@ -45,7 +59,7 @@ router.post('/users/login', async (req, res) => {
 // })
 
 
-//  endpoint with authentication
+//  endpoint with authentication middleware
 router.get('/users/me', auth, (req, res) => {
     res.send(req.user);
 })

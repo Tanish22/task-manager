@@ -62,7 +62,8 @@ userSchema.methods.generateAuthToken = async function(){
     const user = this;  // as this points to the instance, we can operate on it using .sign, etc
 
     // 'firstauthproject' refers to the jwt secret key stored on the server to authenticate the correct user
-    const token = jwt.sign({_id : user._id.toString()}, 'firstauthproject');
+
+    const token = jwt.sign({_id : user._id.toString()}, 'firstauthproject'); // _id refers to the payload 
 
     user.tokens = user.tokens.concat({token});  // concats 
     await user.save();

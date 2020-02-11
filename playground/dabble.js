@@ -26,39 +26,45 @@
 
 
 // check whether sum = 100 or either of the 2 is of value 100
-function checkTwoNos(num1 , num2){
-    if(num1 == 100 || num2 === 100 || num1 + num2 === 100){
-        return true
-    }
-    else{
-        return false
-    }
-}
-// console.log(checkTwoNos(65, 40));
-
-
-// even nos between 0-1000
-
-
-const evenArr = () => {
-    const arr = new Array(10)
-      .map(() => {
-        return {
-          name: "tanish",
-          age: 30
-        };
-      })
-      .fill(80);
-
-//     for(var i = 0; i <= 10; i++){
-//         console.log(arr.push(i));              
+// function checkTwoNos(num1 , num2){
+//     if(num1 == 100 || num2 === 100 || num1 + num2 === 100){
+//         return true
 //     }
-    return arr;
-}
+//     else{
+//         return false
+//     }
+// }
+// // console.log(checkTwoNos(65, 40));
 
-console.log(evenArr());
+
+// // even nos between 0-1000
 
 
+// const evenArr = () => {
+//     const arr = new Array(10)
+//       .map(() => {
+//         return {
+//           name: "tanish",
+//           age: 30
+//         };
+//       })
+//       .fill(80);
 
-// getting extension of a filename
+// //     for(var i = 0; i <= 10; i++){
+// //         console.log(arr.push(i));              
+// //     }
+//     return arr;
+// }
+
+// console.log(evenArr());
+
+    
+// //  HIGHER ORDER FUNCTIONS
+
+// const add = (a, b) => (num1, num2) => num2 * num1 + a + b;
+
+// console.log(add(2, 2)(4, 4));
+ 
+
+
 
