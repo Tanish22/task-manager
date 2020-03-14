@@ -64,7 +64,20 @@
 // const add = (a, b) => (num1, num2) => num2 * num1 + a + b;
 
 // console.log(add(2, 2)(4, 4));
+
+
+// const a = {};
+
+function add(a){
+    a = {};
+    const obj = {
+        car : 'mclaren',
+        model : 'speedtail'
+    }
+   console.log((a.bestCar = obj));
+    
+    
+}
+add()
+
  
-
-
-

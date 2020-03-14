@@ -4,6 +4,9 @@ const router = new express.Router();
 const User = require('../models/user');
 const auth = require('../middleware/auth');
 
+
+// "/users(signup)" & "/login" will generate jwt
+
 router.post('/users', async (req, res) => {
     const user = new User(req.body)
 
@@ -18,10 +21,10 @@ router.post('/users', async (req, res) => {
     } 
 }) 
 
-router.post('/users/login', async (req, res) => {
+router.post('/users/login', auth, async (req, res) => {
     try{
         const user = await User.findByCredentials(req.body.email, req.body.password);
-        
+         
         const token = await user.generateAuthToken();
  
         res.send({ user, token });
@@ -31,6 +34,9 @@ router.post('/users/login', async (req, res) => {
     }
 })
 
+
+// it requires you to be logged in hence it requires the auth middleware 
+// http delete method can also be used 
 router.post('/users/logout', auth, async (req, res) => {
     try{
         req.user.tokens = req.user.tokens.filter((token) => {
@@ -63,6 +69,7 @@ router.post('/users/logout', auth, async (req, res) => {
 router.get('/users/me', auth, (req, res) => {
     res.send(req.user);
 })
+
 
 router.get('/users/:id', async (req, res) => {
     const _id = req.params.id;
@@ -113,6 +120,7 @@ router.patch('/users/:id', async (req, res) => {
         res.status(400).send(e)
     }
 })
+
 
 router.delete('/users/:id', async (req, res) => {
     try{
