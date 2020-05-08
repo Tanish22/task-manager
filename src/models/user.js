@@ -54,6 +54,19 @@ const userSchema = new mongoose.Schema({
     }]
 })
 
+
+/*   toJSON() is used to manipulate the output of the response "res.send()" in the routes in
+     a way the developer wants to. e.g. displaying only the relevant user obj properties     */
+userSchema.methods.toJSON = function(){
+    const user = this;
+    const userObject = user.toObject();
+
+    delete userObject.password;
+    delete userObject.tokens;
+
+    return userObject; 
+}
+
                     // SCHEMA.METHODS ARE ACCESSIBLE ON AN INSTANCE
 
     // generates and returns a token on a specific user 
@@ -81,7 +94,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
-
+ 
     if(!isMatch){
         throw new Error('Unable to login');
     }

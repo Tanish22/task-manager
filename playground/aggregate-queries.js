@@ -3,8 +3,8 @@ UserFavourites.aggregate([
     $lookup: {
       from: "contents",
       // localField:{ $ifNull: [ "$content_id", 0 ] },
-      localField: "content_id",
-      foreignField: "ID",
+      localField: "content_id", // fieldname in userfavourites
+      foreignField: "ID", // ref to contents
       as: "content_data"
     }
   },

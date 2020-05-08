@@ -5,14 +5,14 @@ const User = require('../models/user');
 const auth = require('../middleware/auth');
 
 
-// "/users(signup)" & "/login" will generate jwt
+// "/users(signup)" & "/login" will generate jwt as both routes require users to be authenticated
 
-router.post('/users', async (req, res) => {
+router.post('/users/signup', async (req, res) => {
     const user = new User(req.body)
 
     try{
     await user.save();
-    const token = user.generateAuthToken();     // generates token on every signup
+    const token = await user.generateAuthToken();     // generates token on every signup
 
     res.status(201).send({user, token})
     }
@@ -21,7 +21,7 @@ router.post('/users', async (req, res) => {
     } 
 }) 
 
-router.post('/users/login', auth, async (req, res) => {
+router.post('/users/login', async (req, res) => {
     try{
         const user = await User.findByCredentials(req.body.email, req.body.password);
          
@@ -35,13 +35,13 @@ router.post('/users/login', auth, async (req, res) => {
 })
 
 
-// it requires you to be logged in hence it requires the auth middleware 
-// http delete method can also be used 
+/*   the user is logged out by filtering out the token (req.token) he logged in with and 
+     returning a new array with the tokens with which he hasn't logged out yet    */
 router.post('/users/logout', auth, async (req, res) => {
     try{
         req.user.tokens = req.user.tokens.filter((token) => {
             return token.token !== req.token
-        })
+        }) 
         await req.user.save()
 
         res.send();
@@ -51,8 +51,21 @@ router.post('/users/logout', auth, async (req, res) => {
     }
 })
 
+router.post('/users/logoutAll', auth, async (req, res) => {
+    try{
+        req.user.tokens = [];
+        
+        await req.user.save();
+        res.send();
+    }
+    catch(error){
+        res.status(500).send();
+    }
+})
 
-// this route has been commented as it will give the logged in user access to all the users
+
+/* this route has been commented as it will give the logged in user access to all the users
+   which kills having auth in the first place */
 
 // router.get('/users', auth, async (req, res) => {
 //     try{
@@ -65,7 +78,8 @@ router.post('/users/logout', auth, async (req, res) => {
 // })
 
 
-//  endpoint with authentication middleware
+/*  this endpoint will just display the authenticated user's profile that we got after 
+reassigning the req object "req.user = user" in the auth middleware */ 
 router.get('/users/me', auth, (req, res) => {
     res.send(req.user);
 })
