@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Task = require('./task')
 
 const userSchema = new mongoose.Schema({    
     name : {
@@ -9,7 +10,7 @@ const userSchema = new mongoose.Schema({
         required : true,
         trim : true 
     },
-
+ 
     email : {
         type : String,
         unique : true,
@@ -55,8 +56,17 @@ const userSchema = new mongoose.Schema({
 })
 
 
-/*   toJSON() is used to manipulate the output of the response "res.send()" in the routes in
-     a way the developer wants to. e.g. displaying only the relevant user obj properties     */
+/*   myTasks is a virtual property as it is not saved in the actual database where it is refering to Task collection,
+     with foreign and local fields telling mongoose how to relate the 2 collections   */
+userSchema.virtual('myTasks', {
+    ref : 'Task',
+    foreignField : 'owner', // refers to a field in other collection
+    localField : '_id'  // refers to a field in this collection that facilitates relationsip between 2 collections 
+})
+
+
+/*   toJSON() enables the developer to send a response with only the relevant object properties
+     i.e. only with the res obj properties he wishes to expose to the user     */
 userSchema.methods.toJSON = function(){
     const user = this;
     const userObject = user.toObject();
@@ -110,6 +120,14 @@ userSchema.pre('save', async function (next){
         user.password = await bcrypt.hash(user.password, 8)
     }
     
+    next();
+});
+
+
+userSchema.pre('remove', async function (next) {
+    const user = this;
+
+    await Task.deleteMany({owner : user._id})
     next();
 })
 

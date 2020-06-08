@@ -4,12 +4,24 @@ const taskSchema = new mongoose.Schema({
   description: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
 
   completed: {
     type: Boolean,
-    default: false
+    default: false,
+  },
+
+  
+  /*  owner field is set to objectId type as it will receive the user Id from the req.user object used to authenticate & as a result will 
+      get saved under owner field in req object as "req.user._id"  */
+
+  /*  ref property is used to refer to the user collection from this task collection so the entire authenticated user's document 
+      can be displayed using the populate method on owner as its the one referencing to the user model.  */
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
   }
 });
 

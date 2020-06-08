@@ -1,3 +1,4 @@
+
 // const add = (a, b) => {
 //     return new Promise((resolve, reject) => {
 //         setTimeout(() => {
@@ -68,16 +69,16 @@
 
 // const a = {};
 
-function add(a){
-    a = {};
-    const obj = {
-        car : 'mclaren',
-        model : 'speedtail'
-    }
-   console.log((a.bestCar = obj));
+// function add(a){
+//     a = {};
+//     const obj = {
+//         car : 'mclaren',
+//         model : 'speedtail'
+//     }
+//    console.log((a.bestCar = obj));
     
     
-}
-add()
+// }
+// add()
 
  

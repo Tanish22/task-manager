@@ -8,7 +8,7 @@ UserFavourites.aggregate([
       as: "content_data"
     }
   },
-  { $match: { user_id: user_id } }
+  { $match: { user_id: user_id } } 
 ]).exec(function(error, content) {
   if (error || content.length < 1)
     res
