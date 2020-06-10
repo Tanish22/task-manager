@@ -27,11 +27,23 @@ router.get('/tasks', auth, async (req, res) => {
         // const tasks = await Task.find({});
         // res.send(tasks);
 
+        const match = {};   // match will contain whatever the query string is entered by the user 
+
+        /* adding completed prop to match prop above dynamically. The value will be extracted from the req.query.completed
+           which is set to true (string) => failure will lead to it being false as its the default set in task model */
+        if(req.query.completed){
+            match.completed = req.query.completed === 'true'
+        }
 
         /*   used populate on the req.user object as we are using auth middleware, then populated the actual virtual 
-             field used in the user object as it has the reference to the Task model which will display all the 
-             tasks of the authenticated user   */
-        await req.user.populate('myTasks').execPopulate(); 
+             field (myTasks) used on the user model as it has the reference to the Task model which will display all the 
+             tasks of the authenticated user    */
+             
+        /*   added match prop i.e. empty object above to populate as it will populate myTasks based on the query string passed   */     
+        await req.user.populate({
+            path : 'myTasks',
+            match 
+        }).execPopulate(); 
         res.send(req.user.myTasks)
     }
     catch(error){
