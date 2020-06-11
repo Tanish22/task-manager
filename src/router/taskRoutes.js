@@ -35,6 +35,13 @@ router.get('/tasks', auth, async (req, res) => {
             match.completed = req.query.completed === 'true'
         }
 
+        const sort = {};    //  will recieve the query string present in brkStr & present data in desc or asc order using sortBy = createdAt
+
+        if(req.query.sortBy) {
+            const brkStr = req.query.sortBy.split(':');
+            sort[brkStr[0]] = brkStr[1] === 'desc' ? -1 : 1
+        }
+
         /*   used populate on the req.user object as we are using auth middleware, then populated the actual virtual 
              field (myTasks) used on the user model as it has the reference to the Task model which will display all the 
              tasks of the authenticated user    */
@@ -42,8 +49,14 @@ router.get('/tasks', auth, async (req, res) => {
         /*   added match prop i.e. empty object above to populate as it will populate myTasks based on the query string passed   */     
         await req.user.populate({
             path : 'myTasks',
-            match 
-        }).execPopulate(); 
+            match,
+
+            options : {                 //  pagination and filtering
+                limit : parseInt(req.query.limit),
+                skip : parseInt(req.query.skip),
+                sort
+            } 
+        }).execPopulate();  
         res.send(req.user.myTasks)
     }
     catch(error){
