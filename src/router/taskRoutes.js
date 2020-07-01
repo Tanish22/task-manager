@@ -37,6 +37,10 @@ router.get('/tasks', auth, async (req, res) => {
 
         const sort = {};    //  will recieve the query string present in brkStr & present data in desc or asc order using sortBy = createdAt
 
+
+        /*  eg. GET  /tasks?sortBy=createdAt:desc(-1)
+            checks if sortBy is provided & splits the above string into 2 parts. dynamically allots sort obj the sortBy method
+            & key as createdAt and its value as desc or asc depending upon the req & it gets populated below  */
         if(req.query.sortBy) {
             const brkStr = req.query.sortBy.split(':');
             sort[brkStr[0]] = brkStr[1] === 'desc' ? -1 : 1
