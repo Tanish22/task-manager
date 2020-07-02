@@ -52,11 +52,15 @@ const userSchema = new mongoose.Schema({
             type : String,
             required : true
         }
-    }]
+    }],
+
+    uploads : {
+        type : Buffer   //  used when data is stored in binary form, e.g. images 
+    }
 },
 
 {
-    timestamps : true
+    timestamps : true   // displays timestamps along with user profile
 })
 
 

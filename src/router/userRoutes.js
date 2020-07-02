@@ -3,12 +3,12 @@ const router = new express.Router();
 
 const multer = require('multer');
 const uploadFiles = multer({
-   dest : 'uploads',  //  dir where files get uploaded
+   // dest : 'uploads',  //  dir where files get uploaded
    limits : {
      fileSize : 1000000  //  limits file upload size to 1mb
    },
    fileFilter(req, file, cb){   //  params : req being made, info about file being uploaded & cb to let multer know its done
-      if(!file.originalname.match(/\.(jpg|jpeg|png)$/)){
+      if(!file.originalname.match(/\.(jpg|jpeg|png)$/)){  //  used regex to upload file having names ending with jpg, jpeg, png 
         return cb(new Error('Please upload an image file'))
       }
 
@@ -49,9 +49,39 @@ router.post("/users/login", async (req, res) => {
   }
 });
 
-router.post('/users/me/upload', uploadFiles.single('aetherian'), (req, res, next) => {
+router.get('/users/:id/uploads', async (req, res, next) => {
+    try{
+        const user = await User.findById(req.params.id);
+
+        if (!user || !user.uploads) {
+          throw new Error();
+        }
+
+        res.set('Content-Type', 'image/jpg');
+        res.send(user.uploads);
+    }
+    catch (e){
+        res.status(404).send();
+    }
+})
+
+
+/*  this route takes in an authenticated user and lets him upload files using uploadFiles.single middleware (multer)
+    it saves in the buffer in the DB under uploads field (type : buffer).. req.file is attached by multer itself   */
+router.post('/users/me/upload', auth, uploadFiles.single('insomnium'), async (req, res, next) => {
+    req.user.uploads = req.file.buffer;
+    await req.user.save();  
+    res.send();
+}, (error, req, res, next) => {
+    res.status(400).send({ error : error.message })
+})
+
+router.delete('/users/me/uploads', auth, async (req, res, next) => {
+    req.user.uploads = undefined;
+    await req.user.save();
     res.send();
 })
+
 
 /*   the user is logged out by filtering out the token (req.token) he logged in with and 
      returning a new array with the tokens with which he hasn't logged out yet    */
