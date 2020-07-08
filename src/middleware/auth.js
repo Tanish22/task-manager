@@ -12,7 +12,7 @@ const auth = async (req, res, next) => {
     try {
           // logging token without the replace method logs "Bearer eyhjkdbdjbsgygvshldbhdj"
           const token = req.header("Authorization").replace("Bearer ", "");
-          const decoded = jwt.verify(token, "firstauthproject");
+          const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
           // finds user with the decoded id and from the tokens provided with previous requests from
           // the token array in the user schema

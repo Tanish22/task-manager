@@ -81,6 +81,7 @@ userSchema.methods.toJSON = function(){
 
     delete userObject.password;
     delete userObject.tokens;
+    delete userObject.uploads;
 
     return userObject; 
 }
@@ -94,7 +95,7 @@ userSchema.methods.generateAuthToken = async function(){
 
     // 'firstauthproject' refers to the jwt secret key stored on the server to authenticate the correct user
 
-    const token = jwt.sign({_id : user._id.toString()}, 'firstauthproject'); // _id refers to the payload 
+    const token = jwt.sign({_id : user._id.toString()}, process.env.JWT_SECRET); // _id refers to the payload 
 
     user.tokens = user.tokens.concat({token});  // concats 
     await user.save();

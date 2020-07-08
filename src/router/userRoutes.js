@@ -1,5 +1,6 @@
 const express = require("express");
 const router = new express.Router();
+const sharp = require('sharp');
 
 const multer = require('multer');
 const uploadFiles = multer({
@@ -49,6 +50,7 @@ router.post("/users/login", async (req, res) => {
   }
 });
 
+//  this endpoint returns the uploaded images of the authenticated user 
 router.get('/users/:id/uploads', async (req, res, next) => {
     try{
         const user = await User.findById(req.params.id);
@@ -57,7 +59,7 @@ router.get('/users/:id/uploads', async (req, res, next) => {
           throw new Error();
         }
 
-        res.set('Content-Type', 'image/jpg');
+        res.set('Content-Type', 'image/jpg'); // sets the response content-type to image as the endpoint returns an image
         res.send(user.uploads);
     }
     catch (e){
@@ -68,13 +70,18 @@ router.get('/users/:id/uploads', async (req, res, next) => {
 
 /*  this route takes in an authenticated user and lets him upload files using uploadFiles.single middleware (multer)
     it saves in the buffer in the DB under uploads field (type : buffer).. req.file is attached by multer itself   */
-router.post('/users/me/upload', auth, uploadFiles.single('insomnium'), async (req, res, next) => {
-    req.user.uploads = req.file.buffer;
-    await req.user.save();  
+router.post('/users/me/upload', auth, uploadFiles.single('tanish'), async (req, res, next) => {
+    //  req.user.uploads = req.file.buffer;
+
+    const buffer = await sharp(req.file.buffer).png().toBuffer();
+    req.user.uploads = buffer;
+    
+    await req.user.save();    
     res.send();
 }, (error, req, res, next) => {
     res.status(400).send({ error : error.message })
 })
+
 
 router.delete('/users/me/uploads', auth, async (req, res, next) => {
     req.user.uploads = undefined;
@@ -97,6 +104,7 @@ router.post("/users/logout", auth, async (req, res) => {
     res.status(500).send();
   }
 });
+
 
 router.post("/users/logoutAll", auth, async (req, res) => {
   try {
