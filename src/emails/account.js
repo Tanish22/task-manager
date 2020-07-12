@@ -4,22 +4,25 @@ require('dotenv').config();
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const msg = {
-  to: "tnsh.gupte@gmail.com",
-  from: "tanishdeveloper22@gmail.com",
-  subject: "My first shot at sendgrid !!",
-  text: "Congrats for having done it successfully !!",
-};
-
-//  sgMail.send(msg);
-
-const sendSGMail = async (mssg) => {
-  try{
-     await sgMail.send(mssg);
-  }
-  catch(error){
-    console.log('error', error);
-    
-  }
+const sendWelcomeEmail = (email, name) => {
+  sgMail.send({
+    to: email,
+    from: "tanishdeveloper22@gmail.com",
+    subject: "Thanks for signing up !!",
+    text: `Welcome to the Task App, ${name}`
+  });
 }
-sendSGMail(msg)
+
+sendCancellationEmail = (email, name) => {
+  sgMail.send({
+    to : email,
+    from : "tanishdeveloper22@gmail.com",
+    subject : "Your account is deleted",
+    text : `Let us know about the reasons for deleting the account Mr. ${name}. I hope to see you soon`
+  })
+}
+
+module.exports = {
+  sendWelcomeEmail,
+  sendCancellationEmail
+}

@@ -17,16 +17,21 @@ const uploadFiles = multer({
    }  
 })
 
+
 const User = require("../models/user");
 const auth = require("../middleware/auth");
 
-// "/users(signup)" & "/login" will generate jwt as both routes require users to be authenticated
+const { sendWelcomeEmail, sendCancellationEmail } = require('../emails/account')
 
+
+// "/users(signup)" & "/login" will generate jwt as both routes require users to be authenticated
 router.post("/users/signup", async (req, res) => {
   const user = new User(req.body);
 
   try {
     await user.save();
+
+    sendWelcomeEmail(user.email, user.name)
     const token = await user.generateAuthToken(); // generates token on every signup
 
     res.status(201).send({ user, token });
@@ -197,6 +202,8 @@ router.delete("/users/me", auth, async (req, res) => {
 
     await req.user.remove();
     res.send(req.user);
+    
+    sendCancellationEmail(req.user.email, req.user.name)
   } catch (e) {
     res.status(500).send(e);
   }
