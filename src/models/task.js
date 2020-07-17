@@ -32,10 +32,10 @@ const taskSchema = new mongoose.Schema({
 taskSchema.pre('save', async function(next){
     const task = this;
 
-    console.log('taskSchema Middleware');    
+    //  console.log('taskSchema Middleware');    
 
     // if(task.isModified('password')){
-    //     task.password = await bcrypt.hash(task.password, 8);
+    //    task.password = await bcrypt.hash(task.password, 8);
     // }
     
     next();

@@ -1,19 +1,9 @@
-const express = require('express');
-const app = express();
-//  const router = new express.Router();
-
-require('dotenv').config();
-
-const userRouter = require('./router/userRoutes')
-const taskRouter = require('./router/taskRoutes')
-
-require('./db/mongoose');
+/*  this module is structured in a way to facilitate normal API calls to the endpoints defined in the API by moving the "require" statements 
+    solely for the purpose of separating the app.listen call from jest testing http reqs using supertest   */
+    
+const app = require('./app');
 
 const port = process.env.PORT
-
-app.use(express.json());
-app.use(userRouter); 
-app.use(taskRouter);
 
 app.listen(port, () => {
     console.log('Server is up on Port : ' + port);    
